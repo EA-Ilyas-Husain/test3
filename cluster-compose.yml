@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    name: nginx
+    targetPort: 80
+    nodePort: 32756
+  selector:
+    app: hellowhale
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hellowhale
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: hellowhale
+    spec:
+      containers:
+      - name: hellowhalecontainer
+        image: ilyashusain/hellowhale
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
